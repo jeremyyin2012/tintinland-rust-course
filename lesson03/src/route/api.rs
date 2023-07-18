@@ -5,7 +5,7 @@ use uuid::Uuid;
 
 use crate::business::Business;
 use crate::model;
-use crate::model::{GetStudentInfo, GetStudentList, Pagination, StudentList};
+use crate::model::{AddStudent, GetStudentInfo, GetStudentList, Pagination, StudentInfo, StudentList};
 use crate::resp::Error::{NotImplemented, ParamsError};
 use crate::resp::{Error, Resp};
 
@@ -34,13 +34,13 @@ pub async fn get_class_info(
     Err(NotImplemented)
 }
 
-/// # 学员列表
+/// # 查询学员列表
 #[openapi(tag = "Student")]
 #[get("/api/student/list?<page>&<per_page>")]
 pub async fn get_student_list(
     biz: &State<Business>,
-    page: Option<i32>,
-    per_page: Option<i32>,
+    page: Option<i64>,
+    per_page: Option<i64>,
 ) -> Result<Resp<StudentList>, Error> {
     let p = Pagination::from_req(page, per_page);
     let req = GetStudentList {
@@ -51,7 +51,7 @@ pub async fn get_student_list(
 }
 
 
-/// # 学员详情
+/// # 查询学员详情
 #[openapi(tag = "Student")]
 #[get("/api/student/info?<id>")]
 pub async fn get_student_info(
@@ -60,5 +60,17 @@ pub async fn get_student_info(
 ) -> Result<Resp<StudentList>, Error> {
     // todo
     Err(NotImplemented)
+}
+
+/// # 添加学员
+#[openapi(tag = "Student")]
+#[post("/api/student/add", data = "<body>")]
+pub async fn add_student(
+    biz: &State<Business>,
+    body: Json<AddStudent>,
+) -> Result<Resp<StudentInfo>, Error> {
+    let req = body.into_inner();
+    let res = biz.student.add_student(req).await?;
+    Ok(Resp::data(res))
 }
 

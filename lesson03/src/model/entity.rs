@@ -48,8 +48,8 @@ impl FromStr for ClassKind {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "A" => Ok(Self::A),
-            "B" => Ok(Self::B),
+            "a" => Ok(Self::A),
+            "b" => Ok(Self::B),
             _ => Err(Error::ParamsError("Unknown ClassKind".to_string())),
         }
     }
@@ -104,8 +104,8 @@ impl FromStr for StudentKind {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "A" => Ok(Self::A),
-            "B" => Ok(Self::B),
+            "a" => Ok(Self::A),
+            "b" => Ok(Self::B),
             _ => Err(Error::ParamsError("Unknown StudentKind".to_string())),
         }
     }
@@ -163,8 +163,8 @@ impl FromStr for TeacherKind {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "A" => Ok(Self::A),
-            "B" => Ok(Self::B),
+            "a" => Ok(Self::A),
+            "b" => Ok(Self::B),
             _ => Err(Error::ParamsError("Unknown TeacherKind".to_string())),
         }
     }
@@ -207,8 +207,8 @@ impl FromStr for CourseKind {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "A" => Ok(Self::A),
-            "B" => Ok(Self::B),
+            "a" => Ok(Self::A),
+            "b" => Ok(Self::B),
             _ => Err(Error::ParamsError("Unknown CourseKind".to_string())),
         }
     }
@@ -251,8 +251,8 @@ impl FromStr for TeachKind {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "A" => Ok(Self::A),
-            "B" => Ok(Self::B),
+            "a" => Ok(Self::A),
+            "b" => Ok(Self::B),
             _ => Err(Error::ParamsError("Unknown TeachKind".to_string())),
         }
     }
@@ -282,8 +282,8 @@ impl FromStr for Semester {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "A" => Ok(Self::A),
-            "B" => Ok(Self::B),
+            "a" => Ok(Self::A),
+            "b" => Ok(Self::B),
             _ => Err(Error::ParamsError("Unknown Semester".to_string())),
         }
     }
@@ -355,8 +355,8 @@ impl FromStr for ExamKind {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "A" => Ok(Self::A),
-            "B" => Ok(Self::B),
+            "a" => Ok(Self::A),
+            "b" => Ok(Self::B),
             _ => Err(Error::ParamsError("Unknown ExamKind".to_string())),
         }
     }

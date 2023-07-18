@@ -1,4 +1,4 @@
-use crate::model::{GetStudentInfo, GetStudentList, Pagination, StudentInfo, StudentList};
+use crate::model::{AddStudent, GetStudentInfo, GetStudentList, Pagination, StudentInfo, StudentList};
 use crate::resp::Error;
 use crate::resp::Error::NotImplemented;
 use crate::services::Services;
@@ -32,5 +32,20 @@ impl StudentBusiness {
 
     pub async fn get_student_info(&self, req: GetStudentInfo) -> Result<StudentInfo, Error> {
         Err(NotImplemented)
+    }
+
+    pub async fn add_student(&self, req: AddStudent) -> Result<StudentInfo, Error> {
+        let student = self.svc.student.add_student(req).await?;
+        let s = StudentInfo {
+            id: student.id,
+            code: student.code,
+            name: student.name,
+            kind: student.kind,
+            create_dt: student.create_dt,
+            create_by: student.create_by,
+            update_dt: student.update_dt,
+            update_by: student.update_by,
+        };
+        Ok(s)
     }
 }

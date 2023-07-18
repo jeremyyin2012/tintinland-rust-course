@@ -1,6 +1,7 @@
 use chrono::{Datelike, Months, NaiveDate, NaiveDateTime, Utc};
-use sea_query::{Expr, PostgresQueryBuilder, Query};
+use sea_query::{Expr, Func, PostgresQueryBuilder, Query};
 use serde_json::Value;
+use sqlx::Row;
 use uuid::Uuid;
 
 use crate::model::{AddStudent, GetStudentList, RowTStudent, Student, StudentId, TStudent};
@@ -96,10 +97,26 @@ impl StudentService {
         Ok(res)
     }
 
-    pub async fn get_students_by_filters(&self, req: GetStudentList) -> Result<(Vec<Student>, i32), Error> {
-        // todo
-        let res = (vec![], 0);
-        Ok(res)
+    pub async fn get_students_by_filters(&self, req: GetStudentList) -> Result<(Vec<Student>, i64), Error> {
+        let sql = Query::select()
+            .columns(TStudent::cols_all())
+            .from(TStudent::Table)
+            .to_string(PostgresQueryBuilder);
+        let mut conn = self.db.default.acquire().await?;
+        let rows: Vec<RowTStudent> = sqlx::query_as(&sql).fetch_all(&mut conn).await?;
+        let mut res = vec![];
+        for row in rows.iter() {
+            let entity = row.to_entity()?;
+            res.push(entity)
+        }
+
+        let sql_count = Query::select()
+            .expr(Func::count(Expr::col((TStudent::Table, TStudent::Id))))
+            .from(TStudent::Table)
+            .to_string(PostgresQueryBuilder);
+        let count_row = sqlx::query(&sql_count).fetch_one(&mut conn).await?;
+        let count = count_row.get(0);
+        Ok((res, count))
     }
 
     pub async fn delete_student_by_id(&self, student_id: StudentId) -> Result<u64, Error> {
@@ -122,7 +139,7 @@ impl StudentService {
         Err(NotImplemented)
     }
 
-    pub async fn add_student(&self, student: AddStudent) -> Result<Student, Error> {
+    pub async fn add_student(&self, req: AddStudent) -> Result<Student, Error> {
         let student_id: StudentId = uuid7::uuid7().into();
         let now = Utc::now();
         let create_dt = NaiveDateTime::new(now.date_naive(), now.time());
@@ -134,9 +151,9 @@ impl StudentService {
             .columns(TStudent::cols_all())
             .values_panic([
                 student_id.into(),
-                student.code.clone().into(),
-                student.name.clone().into(),
-                (student.kind as i32).into(),
+                req.code.clone().into(),
+                req.name.clone().into(),
+                (req.kind as i32).into(),
                 create_dt.into(),
                 create_by.into(),
                 update_dt.into(),
@@ -144,14 +161,14 @@ impl StudentService {
             ]).to_string(PostgresQueryBuilder);
         let mut conn = self.db.default.acquire().await?;
         let res = sqlx::query(&sql).execute(&mut conn).await?.rows_affected();
-        if !res > 0 {
+        if res <= 0 {
             return Err(Error::ServerError("创建失败".to_string()))
         }
         let s = Student {
             id: student_id,
-            code: student.code,
-            name: student.name,
-            kind: student.kind,
+            code: req.code,
+            name: req.name,
+            kind: req.kind,
             create_dt,
             create_by,
             update_dt,
