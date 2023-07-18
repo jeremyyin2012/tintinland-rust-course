@@ -1,0 +1,41 @@
+version: '3'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    container_name: edu
+    ports:
+      - "8000:8000"
+    tty: true
+    stdin_open: true
+    environment:
+      TZ: "Asia/Shanghai"
+      DATABASE_URL: postgres://postgres:edu@localhost:5432/edu
+      REDIS_URL: redis://:edu@localhost:6379/0
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "2m"
+        max-file: "10"
+
+  pgsql:
+    image: postgres:15.1
+    container_name: pgsql
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: edu
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - data:/var/lib/postgresql/data
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "2m"
+        max-file: "10"
+
+volumes:
+  data:
