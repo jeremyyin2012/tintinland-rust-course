@@ -14,7 +14,7 @@ use schemars::_serde_json::json;
 use schemars::schema::SchemaObject;
 use thiserror::Error;
 
-const PROJECT_NAME: &str = "edu";
+const PROJECT_NAME: &str = "lesson03";
 
 #[derive(Debug, serde::Serialize, serde::Deserialize, schemars::JsonSchema, Copy, Clone)]
 pub struct Placeholder {}

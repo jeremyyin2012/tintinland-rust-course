@@ -1,36 +1,67 @@
 version: '3'
 services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    restart: always
-    container_name: edu
-    ports:
-      - "8000:8000"
-    tty: true
-    stdin_open: true
-    environment:
-      TZ: "Asia/Shanghai"
-      DATABASE_URL: postgres://postgres:edu@localhost:5432/edu
-      REDIS_URL: redis://:edu@localhost:6379/0
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "2m"
-        max-file: "10"
+#  app:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    restart: always
+#    container_name: lesson03
+#    ports:
+#      - "8000:8000"
+#    tty: true
+#    stdin_open: true
+#    environment:
+#      TZ: "Asia/Shanghai"
+#      DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
+#      REDIS_URL: redis://:@localhost:6379/0
+#    logging:
+#      driver: "json-file"
+#      options:
+#        max-size: "2m"
+#        max-file: "10"
 
   pgsql:
     image: postgres:15.1
     container_name: pgsql
     restart: always
     environment:
-      POSTGRES_PASSWORD: edu
+      POSTGRES_PASSWORD: postgres
       PGDATA: /var/lib/postgresql/data/pgdata
     ports:
       - "5432:5432"
     volumes:
-      - data:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "2m"
+        max-file: "10"
+
+  pgadmin4:
+    image: dpage/pgadmin4:6.18
+    container_name: pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: jeremyyin2012@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: jeremyyin2012
+    ports:
+      - "5480:80"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "2m"
+        max-file: "10"
+
+  redis:
+    image: redis:5.0.14
+    restart: always
+    container_name: redis
+    environment:
+      TZ: "Asia/Shanghai"
+    ports:
+      - "6379:6379"
+    tty: true
+    stdin_open: true
     logging:
       driver: "json-file"
       options:
@@ -38,4 +69,4 @@ services:
         max-file: "10"
 
 volumes:
-  data:
+  pgdata:
