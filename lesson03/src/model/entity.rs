@@ -8,17 +8,31 @@ use serde_json::Value;
 use uuid::Uuid;
 use crate::resp::Error;
 
+
+pub type StudentId = Uuid;
+pub type ClassId = Uuid;
+pub type CourseId = Uuid;
+pub type TeacherId = Uuid;
+pub type GradesId = Uuid;
+pub type TeachId = Uuid;
+pub type SelectionId = Uuid;
+pub type ScheduleId = Uuid;
+pub type ClassroomId = Uuid;
+pub type ExamId = Uuid;
+pub type UserId = Uuid;
+
+
 /// 班级
 #[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
 pub struct Class {
-    pub id: Uuid,
+    pub id: ClassId,
     pub code: String,
     pub name: String,
     pub kind: ClassKind,
     pub create_dt: NaiveDateTime,
-    pub create_by: Uuid,
+    pub create_by: UserId,
     pub update_dt: NaiveDateTime,
-    pub update_by: Uuid,
+    pub update_by: UserId,
 }
 
 #[derive(Debug, Clone, Deserialize, JsonSchema, Copy)]
@@ -56,25 +70,25 @@ impl TryFrom<i32> for ClassKind {
 /// 班级-学员
 #[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
 pub struct ClassStudent {
-    pub class_id: Uuid,
-    pub student_id: Uuid,
+    pub class_id: ClassId,
+    pub student_id: StudentId,
     pub create_dt: NaiveDateTime,
-    pub create_by: Uuid,
+    pub create_by: UserId,
     pub update_dt: NaiveDateTime,
-    pub update_by: Uuid,
+    pub update_by: UserId,
 }
 
 /// 学员
 #[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
 pub struct Student {
-    pub id: Uuid,
+    pub id: StudentId,
     pub code: String,
     pub name: String,
     pub kind: StudentKind,
     pub create_dt: NaiveDateTime,
-    pub create_by: Uuid,
+    pub create_by: UserId,
     pub update_dt: NaiveDateTime,
-    pub update_by: Uuid,
+    pub update_by: UserId,
 }
 
 #[derive(Debug, Clone, Deserialize, JsonSchema, Copy)]
@@ -112,28 +126,28 @@ impl TryFrom<i32> for StudentKind {
 /// 成绩
 #[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
 pub struct Grades {
-    pub id: Uuid,
-    pub student_id: Uuid,
-    pub course_id: Uuid,
+    pub id: GradesId,
+    pub student_id: StudentId,
+    pub course_id: CourseId,
     pub score: i32,
     pub create_dt: NaiveDateTime,
-    pub create_by: Uuid,
+    pub create_by: UserId,
     pub update_dt: NaiveDateTime,
-    pub update_by: Uuid,
+    pub update_by: UserId,
 }
 
 
 /// 教师
 #[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
 pub struct Teacher {
-    pub id: Uuid,
+    pub id: TeacherId,
     pub code: String,
     pub name: String,
     pub kind: TeacherKind,
     pub create_dt: NaiveDateTime,
-    pub create_by: Uuid,
+    pub create_by: UserId,
     pub update_dt: NaiveDateTime,
-    pub update_by: Uuid,
+    pub update_by: UserId,
 }
 
 #[derive(Debug, Clone, Deserialize, JsonSchema, Copy)]
@@ -170,14 +184,14 @@ impl TryFrom<i32> for TeacherKind {
 /// 课程
 #[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
 pub struct Course {
-    pub id: Uuid,
+    pub id: CourseId,
     pub code: String,
     pub name: String,
     pub kind: CourseKind,
     pub create_dt: NaiveDateTime,
-    pub create_by: Uuid,
+    pub create_by: UserId,
     pub update_dt: NaiveDateTime,
-    pub update_by: Uuid,
+    pub update_by: UserId,
 }
 
 #[derive(Debug, Clone, Deserialize, JsonSchema, Copy)]
@@ -214,14 +228,14 @@ impl TryFrom<i32> for CourseKind {
 /// 任课
 #[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
 pub struct Teach {
-    pub id: Uuid,
+    pub id: TeachId,
     pub kind: TeachKind,
     pub year: i32,
     pub semester: Semester,
     pub create_dt: NaiveDateTime,
-    pub create_by: Uuid,
+    pub create_by: UserId,
     pub update_dt: NaiveDateTime,
-    pub update_by: Uuid,
+    pub update_by: UserId,
 }
 
 #[derive(Debug, Clone, Deserialize, JsonSchema, Copy)]
@@ -289,43 +303,43 @@ impl TryFrom<i32> for Semester {
 /// 配课
 #[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
 pub struct Selection {
-    pub id: Uuid,
-    pub class_id: Uuid,
-    pub teach_id: Uuid,
+    pub id: SelectionId,
+    pub class_id: ClassId,
+    pub teach_id: TeachId,
     pub create_dt: NaiveDateTime,
-    pub create_by: Uuid,
+    pub create_by: UserId,
     pub update_dt: NaiveDateTime,
-    pub update_by: Uuid,
+    pub update_by: UserId,
 }
 
 /// 上课
 #[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
 pub struct Schedule {
-    pub id: Uuid,
-    pub selection_id: Uuid,
+    pub id: ScheduleId,
+    pub selection_id: SelectionId,
     pub start_dt: NaiveDateTime,
     pub end_dt: NaiveDateTime,
-    pub classroom_id: Uuid,
+    pub classroom_id: ClassroomId,
     pub create_dt: NaiveDateTime,
-    pub create_by: Uuid,
+    pub create_by: UserId,
     pub update_dt: NaiveDateTime,
-    pub update_by: Uuid,
+    pub update_by: UserId,
 }
 
 
 /// 考试
 #[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
 pub struct Exam {
-    pub id: Uuid,
+    pub id: ExamId,
     pub code: String,
     pub name: String,
     pub kind: ExamKind,
-    pub selection_id: Uuid,
+    pub selection_id: SelectionId,
     pub score: i32,
     pub create_dt: NaiveDateTime,
-    pub create_by: Uuid,
+    pub create_by: UserId,
     pub update_dt: NaiveDateTime,
-    pub update_by: Uuid,
+    pub update_by: UserId,
 }
 
 #[derive(Debug, Clone, Deserialize, JsonSchema, Copy)]

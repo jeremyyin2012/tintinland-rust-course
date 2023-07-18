@@ -3,7 +3,7 @@ use sea_query::{Expr, PostgresQueryBuilder, Query};
 use serde_json::Value;
 use uuid::Uuid;
 
-use crate::model::{AddStudent, GetStudentList, RowTStudent, Student, TStudent};
+use crate::model::{AddStudent, GetStudentList, RowTStudent, Student, StudentId, TStudent};
 use crate::resp::Error;
 use crate::resp::Error::NotImplemented;
 use crate::store::api_client::ApiClients;
@@ -32,7 +32,7 @@ impl StudentService {
 }
 
 impl StudentService {
-    pub async fn get_student_by_id(&self, student_id: Uuid) -> Result<Student, Error> {
+    pub async fn get_student_by_id(&self, student_id: StudentId) -> Result<Student, Error> {
         let sql = Query::select()
             .columns(TStudent::cols_all())
             .from(TStudent::Table)
@@ -60,7 +60,7 @@ impl StudentService {
         Ok(entity)
     }
 
-    pub async fn get_students_by_ids(&self, student_ids: Vec<Uuid>) -> Result<Vec<Student>, Error> {
+    pub async fn get_students_by_ids(&self, student_ids: Vec<StudentId>) -> Result<Vec<Student>, Error> {
         let sql = Query::select()
             .columns(TStudent::cols_all())
             .from(TStudent::Table)
@@ -102,7 +102,7 @@ impl StudentService {
         Ok(res)
     }
 
-    pub async fn delete_student_by_id(&self, student_id: Uuid) -> Result<u64, Error> {
+    pub async fn delete_student_by_id(&self, student_id: StudentId) -> Result<u64, Error> {
         let sql = Query::delete()
             .from_table(TStudent::Table)
             .and_where(
@@ -114,16 +114,16 @@ impl StudentService {
         Ok(res)
     }
 
-    pub async fn enable_student_by_id(&self, student_id: Uuid) -> Result<u64, Error> {
+    pub async fn enable_student_by_id(&self, student_id: StudentId) -> Result<u64, Error> {
         Err(NotImplemented)
     }
 
-    pub async fn disable_student_by_id(&self, student_id: Uuid) -> Result<u64, Error> {
+    pub async fn disable_student_by_id(&self, student_id: StudentId) -> Result<u64, Error> {
         Err(NotImplemented)
     }
 
     pub async fn add_student(&self, student: AddStudent) -> Result<Student, Error> {
-        let student_id: Uuid = uuid7::uuid7().into();
+        let student_id: StudentId = uuid7::uuid7().into();
         let now = Utc::now();
         let create_dt = NaiveDateTime::new(now.date_naive(), now.time());
         let create_by = Uuid::nil();
