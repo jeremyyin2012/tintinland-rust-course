@@ -61,7 +61,10 @@ async fn main() -> Result<(), rocket::Error> {
         route::api_ping,
         route::api_ping_pgsql,
         route::api_ping_redis,
+        route::api::get_class_list,
+        route::api::get_class_info,
         route::api::get_student_list,
+        route::api::get_student_info,
     ];
     let store = Store::new().await;
     let sentry_dsn = store.config.sentry_dsn.clone();
