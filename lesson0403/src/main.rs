@@ -74,104 +74,29 @@ impl Add<A> for B {
     }
 }
 
-/// 假设有一个概念叫 W
+/// 假设有一个概念叫 W，它返回B
 pub trait W {
-    fn w(&self) -> Box<dyn W>;
+    fn w(&self) -> B;
 }
 
 /// 给A实现下W，返回也是实现了W的即可
 impl W for A {
-    fn w(&self) -> Box<dyn W> {
+    fn w(&self) -> B {
         let v = &self.value * 1000 * 5;
-        let b = B { value: v };
-        Box::new(b)
+        B { value: v }
     }
 }
 
 impl W for B {
-    fn w(&self) -> Box<dyn W> {
+    fn w(&self) -> B {
         let v = &self.value * 5;
-        let b = B { value: v };
-        Box::new(b)
+        B { value: v }
     }
 }
 
 /// 然后有一个函数，支持给实现了W的东西做w计算
-pub fn do_w(obj: &dyn W) -> Box<dyn W> {
-    obj.w()
-}
-
-/// 据说只要是实现了 Add 的 W 也都可以相加
-impl Add for Box<dyn W> {
-    type Output = Box<dyn W>;
-
-    fn add(self, rhs: Self) -> Self::Output {
-        self.w() + rhs.w()
-    }
-}
-
-impl Add<Box<dyn W + 'static>> for Box<dyn W> {
-    type Output = Box<dyn W>;
-
-    fn add(self, rhs: Box<dyn W>) -> Self::Output {
-        todo!()
-    }
-}
-
-/// 那么如果现在有一个 X
-#[derive(Debug, Copy, Clone, PartialOrd, PartialEq)]
-pub struct X {
-    pub value: i64,
-}
-
-impl X {
-    pub fn new(n: i64) -> Self {
-        Self {
-            value: n
-        }
-    }
-}
-
-/// 还有一个 Y
-#[derive(Debug, Copy, Clone, PartialOrd, PartialEq)]
-pub struct Y {
-    pub value: i64,
-}
-
-impl Y {
-    pub fn new(n: i64) -> Self {
-        Self {
-            value: n
-        }
-    }
-}
-
-/// 它们都只知道去实现 W
-impl W for X {
-    fn w(&self) -> Box<dyn W> {
-        Box::new(Self { value: &self.value * 5 })
-    }
-}
-
-impl W for Y {
-    fn w(&self) -> Box<dyn W> {
-        Box::new(Self { value: &self.value * 1000 * 5 })
-    }
-}
-
-
-/// 然后两个分别实现了 W 的东西可以分别调用 w
-/// 泛型的写法
-pub fn do_w2<T, S>(obj1: T, obj2: S) -> Box<dyn W>
-    where
-        T: W,
-        S: W {
-    obj1.w() + obj2.w()
-}
-
-/// Trait Object 的写法
-pub fn do_w3(obj1: Box<dyn W>, obj2: Box<dyn W>) -> Box<dyn W> {
-    obj1.w() + obj2.w()
+pub fn do_w(obj: &dyn W, obj2: &dyn W) -> B {
+    obj.w() + obj2.w()
 }
 
 
@@ -203,9 +128,9 @@ fn main() {
     assert_eq!(c3, c5);
     println!("{c1:?} {c2:?} {c3:?} {c4:?} {c5:?}");
 
+    let d1 = A::new(100);
+    let d2 = B::new(1000);
+    let d3 = do_w(&d1, &d2);
+    println!("{d3:?}")
 
-    let x = X::new(1);
-    let y = Y::new(2);
-    let z = do_w2(x, y);
-    let z2 = do_w3(Box::new(x), Box::new(y));
 }
