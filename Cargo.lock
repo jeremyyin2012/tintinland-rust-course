@@ -1476,6 +1476,10 @@ name = "lesson0402"
 version = "0.1.0"
 
 [[package]]
+name = "lesson0403"
+version = "0.1.0"
+
+[[package]]
 name = "libc"
 version = "0.2.147"
 source = "registry+https://github.com/rust-lang/crates.io-index"
