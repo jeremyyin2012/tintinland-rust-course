@@ -90,3 +90,7 @@ cargo build -r --bin lesson0402
 
 ---
 
+```sh
+cargo run --bin lesson0403
+```
+
